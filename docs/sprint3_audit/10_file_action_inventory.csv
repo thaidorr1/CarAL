@@ -1,0 +1,44 @@
+File,Category,Current_Status,Action,Rationale,Dependencies,Risk_Level,Verification_Method,Recovery_Plan
+ai/inference/pipeline.py,Core AI,Active (2958 lines),MERGE,"File quá lớn (God Class); đề xuất bẻ nhỏ thành geometry, rules, mapper, visualizer và giữ pipeline.py làm orchestrator",random_demo.py; ai/api/main.py; ai/tests/test_pipeline_unit.py,Medium,"Chạy 'pytest ai/tests/' đảm bảo 46/46 unit tests pass 100% sau khi refactor","Khôi phục từ git checkout HEAD -- ai/inference/pipeline.py"
+ai/inference/change_detection.py,Core AI,Active (513 lines),KEEP,"Mô-đun đối soát Before/After độc lập, đã tối ưu hóa và tích hợp supervision",ai/tests/test_pipeline_unit.py; scratch/test_change_detection_demo.py,Low,"Đã test pass 8/8 tests trong TestChangeDetectionSuite",N/A
+ai/inference/__init__.py,Core AI,Active,KEEP,Tệp package chuẩn của Python,ai/inference/*,None,Import kiểm tra,N/A
+ai/models/weights/damage_best.pt,Models,Active (6.2 MB),KEEP,Trọng số chính thức phát hiện tổn thất Stage 1,pipeline.py; export_onnx.py,Low,Chạy forward pass trên ảnh mẫu,Sao lưu tại Google Drive / D:/backup
+ai/models/weights/damage_best.onnx,Models,Active (12.2 MB),KEEP,Trọng số ONNX chính thức phục vụ suy luận CPU,benchmark_latency.py,Low,Load bằng onnxruntime.InferenceSession,Xuất lại từ export_onnx.py
+ai/models/weights/parts_seg.pt,Models,Active (22.7 MB),KEEP,Trọng số chính thức phân đoạn bộ phận Stage 2,pipeline.py; export_onnx.py,Low,Chạy forward pass trên ảnh mẫu,Sao lưu tại Google Drive / D:/backup
+ai/models/weights/parts_seg.onnx,Models,Active (45.2 MB),KEEP,Trọng số ONNX chính thức phục vụ suy luận CPU,benchmark_latency.py,Low,Load bằng onnxruntime.InferenceSession,Xuất lại từ export_onnx.py
+ai/models/yolov8n.pt,Models,Base Pretrained (6.4 MB),ARCHIVE,Checkpoint COCO gốc dùng để fine-tune; không dùng khi suy luận,ai/train/train_damage.py,Low,Tải tự động từ Ultralytics nếu thiếu,Tự tải từ ultralytics.com
+ai/models/yolov8s.pt,Models,Base Pretrained (22.1 MB),ARCHIVE,Checkpoint COCO gốc; không dùng trong pipeline suy luận,Không có caller trực tiếp,Low,Kiểm tra train script,Tự tải từ ultralytics.com
+ai/models/yolov8s-seg.pt,Models,Base Pretrained (23.4 MB),ARCHIVE,Checkpoint COCO seg gốc dùng để fine-tune; không dùng khi suy luận,ai/train/train_parts.py,Low,Tải tự động từ Ultralytics nếu thiếu,Tự tải từ ultralytics.com
+ai/api/main.py,API Gateway,Active (13.6 KB),KEEP,FastAPI application server cung cấp REST endpoints,uvicorn; ai/inference/pipeline.py,Medium,Chạy uvicorn ai.api.main:app --port 8000,Git commit
+ai/api/schemas.py,API Gateway,Active (4.2 KB),KEEP,Pydantic schema chuẩn hóa request và response,ai/api/main.py,Low,Import kiểm tra,Git commit
+ai/api/__init__.py,API Gateway,Active,KEEP,Tệp package chuẩn,ai/api/*,None,Import kiểm tra,N/A
+ai/configs/classes.yaml,Configuration,Active,MERGE,Trùng lặp với damage.yaml và data.yaml; cần gộp thành damage_data.yaml,ai/inference/pipeline.py,Low,Chạy pipeline.run() xác minh class name,Git commit
+ai/configs/damage.yaml,Configuration,Active,MERGE,Trùng lặp với classes.yaml; gộp vào cấu hình duy nhất,ai/train/train_damage.py,Low,Chạy kiểm thử nạp YAML,Git commit
+ai/configs/data.yaml,Configuration,Active,MERGE,Cấu hình CarDD cũ 6 lớp; gộp vào cấu hình 5 lớp proposal,ai/train/train_damage.py,Low,Chạy kiểm thử nạp YAML,Git commit
+ai/configs/parts.yaml,Configuration,Active,MERGE,Trùng lặp với data_parts.yaml; gộp thành parts_data.yaml,ai/train/train_parts.py,Low,Chạy kiểm thử nạp YAML,Git commit
+ai/configs/data_parts.yaml,Configuration,Active,MERGE,Trùng lặp với parts.yaml; gộp vào cấu hình duy nhất,ai/train/train_parts.py,Low,Chạy kiểm thử nạp YAML,Git commit
+ai/configs/classes.md,Documentation,Obsolete,ARCHIVE,Tài liệu tham chiếu file infer.py đã bị xóa từ commit trước,Không có caller,None,Đọc nội dung kiểm tra,Git commit
+ai/train/train_damage.py,Training,Active,KEEP,Script huấn luyện mô hình Damage chính thức,ai/configs/damage.yaml,Low,Chạy thử nghiệm lệnh train với --epochs 1,Git commit
+ai/train/train_parts.py,Training,Active,KEEP,Script huấn luyện mô hình phân đoạn bộ phận chính thức,ai/configs/parts.yaml,Low,Chạy thử nghiệm lệnh train với --epochs 1,Git commit
+ai/scripts/train_both_stages.py,Training,Duplicate,ARCHIVE,Script trùng lặp gộp 2 stage; đã có train_damage và train_parts,Không có caller định kỳ,Low,Kiểm tra nội dung khớp train_damage/parts,Git commit
+ai/scripts/train_parts_model.py,Training,Duplicate,ARCHIVE,Script trùng lặp chức năng với ai/train/train_parts.py,Không có caller định kỳ,Low,Kiểm tra nội dung khớp train_parts.py,Git commit
+ai/scripts/coco_to_yolo.py,Data Tool,Active,MOVE,Chuyển vào ai/evaluation/ hoặc data/tools/ để gom nhóm,Không có caller tự động,None,Chạy thử nghiệm chuyển đổi sample,Git commit
+ai/scripts/export_onnx.py,Deployment,Active,KEEP,Script chính thức xuất mô hình ONNX đã benchmark thành công,ultralytics; onnxruntime,Low,Chạy python ai/scripts/export_onnx.py,Git commit
+ai/scripts/eval_phase2.py,Evaluation,Active,MOVE,Chuyển vào ai/evaluation/evaluate_parts.py,Không có caller tự động,Low,Chạy thử nghiệm script eval,Git commit
+ai/scripts/evaluate_damage.py,Evaluation,Active,MOVE,Chuyển vào ai/evaluation/evaluate_damage.py,Không có caller tự động,Low,Chạy thử nghiệm script eval,Git commit
+ai/scripts/finalize_damage.py,Evaluation,Obsolete,ARCHIVE,Script hoàn thiện tạm thời của Sprint 1,Không có caller tự động,Low,Kiểm tra log lịch sử,Git commit
+ai/scripts/runtime.py,Legacy,Obsolete,ARCHIVE,Runtime cũ trước khi có TwoStagePipeline,Không có caller,None,Kiểm tra grep toàn repo,Git commit
+ai/scripts/archive_tools/,Archive,Obsolete (22 files),DELETE,22 script tạm dùng một lần từ các sprint cũ; không còn bất kỳ caller nào,Không có,None,Grep toàn bộ codebase không có file nào import,Sao lưu nén thành zip cất trữ ngoài repo
+ai/tests/test_pipeline_unit.py,Testing,Active (1445 lines),KEEP,Bộ 46 unit tests cốt lõi bảo vệ logic pipeline và change detection,pytest,Medium,Chạy pytest -v đảm bảo 100% pass,Git commit
+random_demo.py,Demo,Active (3.0 KB),MOVE,Đề xuất chuyển vào demo/run_demo.py cho đúng chuẩn cấu trúc dự án,ai/inference/pipeline.py,Low,Chạy python demo/run_demo.py kiểm tra kết quả,Git commit
+requirements.txt,Environment,Active,KEEP,Tệp định nghĩa thư viện toàn dự án (chuẩn hóa lại torch/torchvision),pip,Medium,Tạo virtualenv sạch và chạy pip install -r,Git commit
+ai/requirements.txt,Environment,Duplicate,DELETE,Phiên bản cũ thừa thãi nằm trong thư mục con ai/,Không có,None,So sánh diff với requirements.txt gốc,Git commit
+ai/requirements-dev.txt,Environment,Duplicate,DELETE,Chỉ có 2 dòng pytest và httpx; đã có đủ trong requirements.txt gốc,Không có,None,So sánh diff với requirements.txt gốc,Git commit
+_backup_config_code/,Backup,Obsolete (117 MB),DELETE,Bản sao lưu tĩnh chiếm 117 MB trong Git workspace; Git đã lưu toàn bộ lịch sử,Không có,None,Kiểm tra git log commit 5694599,Lưu trữ ngoài thư mục dự án (hoặc nén zip)
+scratch/,Scratch,Temporary (19 files),ARCHIVE,19 file thử nghiệm dở dang; đề xuất lưu trữ hoặc nén vào _archive,Không có,None,Grep toàn repo không có file nào phụ thuộc,Lưu trữ tại thư mục _archive
+ai/data/parts_verified/,Dataset,Empty,DELETE,Chứa 6 thư mục con rỗng không có ảnh; chỉ có 3 file audit cũ,Không có,None,Kiểm tra dung lượng và tệp con,Git commit
+docs/GRAPH_REPORT.md,Documentation,Active,KEEP,Báo cáo tri thức Knowledge Graph từ Graphify,docs,None,Đọc xem nội dung,Tạo lại bằng build_graph.py
+docs/sprint2_ai_core_report.md,Documentation,Active,KEEP,Báo cáo kỹ thuật tổng kết Sprint 2,docs,None,Đọc xem nội dung,Git commit
+docs/sprint2_change_audit.md,Documentation,Active,KEEP,Báo cáo kiểm toán thay đổi Sprint 2,docs,None,Đọc xem nội dung,Git commit
+README.md,Documentation,Active,KEEP,Tài liệu hướng dẫn tổng quan dự án,Root,None,Đọc xem nội dung,Git commit
+.gitignore,Configuration,Active,KEEP,Cấu hình chặn các tệp nặng và cache cục bộ,Git,None,Kiểm tra git status,Git commit

@@ -1,11 +1,51 @@
-# ID YOLO = category_id COCO - 1. Giữ đủ 6 lớp khi convert và train.
-# Chỉ gộp/lọc tại bước xuất JSON; xem classes.md và inference/infer.py.
+# Cấu hình Danh mục Lớp chuẩn hóa AutoClaim-AI
+# Stage 1: 5 Nhóm Hư Hỏng chuẩn (In-Scope)
 damage:
-  - dent
-  - scratch
-  - crack
-  - glass_shatter
-  - lamp_broken
-  - tire_flat
-# Chưa có dataset bộ phận xe; không dùng các lớp hư hỏng thay thế.
-parts: []
+  - scratch         # Vết cào xước (Scratch)
+  - dent            # Vết móp/lõm (Dent)
+  - crack           # Rạn nứt kính/đèn (Crack)
+  - tear_puncture   # Rách thủng cản nhựa (Tear/Puncture)
+  - paint_chipping  # Bong tróc lớp sơn (Paint Chipping)
+
+damage_merge_map:
+  scratch: scratch
+  dent: dent
+  crack: crack
+  glass_shatter: crack
+  lamp_broken: crack
+  tear_puncture: tear_puncture
+  paint_chipping: paint_chipping
+  tire_flat: null
+
+# Stage 2: Khóa chặt chuẩn 8 Bộ phận xe ô tô (STANDARD_PARTS)
+standard_8_parts:
+  - "Nắp capo"
+  - "Cửa trước"
+  - "Cửa sau"
+  - "Cản trước"
+  - "Cản sau"
+  - "Kính xe"
+  - "Đèn xe"
+  - "Vè che bánh"
+
+# Lớp ánh xạ từ 7 class thô của mô hình AI sang 8 class chuẩn
+parts_mapping:
+  nap_capo: "Nắp capo"
+  can_truoc: "Cản trước"
+  can_sau: "Cản sau"
+  ve_che_banh: "Vè che bánh"
+  kinh_lai: "Kính xe"
+  kinh_chieu_hau: "Kính xe"
+  den_xe: "Đèn xe"
+  cua_hong: "Cửa trước | Cửa sau (Phân giải theo Topology trục bánh xe)"
+
+# Raw model classes (7 classes gốc phục vụ YOLO weights)
+raw_model_parts:
+  0: can_truoc
+  1: can_sau
+  2: nap_capo
+  3: ve_che_banh
+  4: cua_hong
+  5: kinh_chieu_hau
+  6: kinh_lai
+

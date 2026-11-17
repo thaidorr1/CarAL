@@ -1,0 +1,22 @@
+# Cấu hình tinh chỉnh YOLOv8-seg (Domain-Adaptive Fine-Tuning) cho AutoClaim-AI
+# Dữ liệu hợp nhất: Pilot (Human-reviewed) + Fender Aux (ve_che_banh) + Replay CarParts
+path: D:/AI_CAR/ai/data/parts_finetune_8cls
+train: images/train
+val: images/val
+
+nc: 8
+names:
+  0: can_truoc
+  1: can_sau
+  2: nap_capo
+  3: ve_che_banh
+  4: cua_truoc
+  5: cua_sau
+  6: kinh_xe
+  7: den_xe
+
+# Siêu tham số tăng cường nhẹ cho fine-tuning để giữ chi tiết vùng tổn thương/cận cảnh
+mixup: 0.1
+mosaic: 0.5
+scale: 0.3
+degrees: 5.0

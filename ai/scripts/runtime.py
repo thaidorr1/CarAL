@@ -1,14 +1,31 @@
 """Đường dẫn và bảng lớp dùng chung; không phụ thuộc thư mục gọi lệnh."""
 from pathlib import Path
 
-AI_ROOT = Path(__file__).resolve().parent
+AI_ROOT = Path(__file__).resolve().parent.parent
 CLASS_NAMES = ("dent", "scratch", "crack", "glass shatter", "lamp broken", "tire flat")
+PROPOSAL_DAMAGE_CLASSES = ("scratch", "dent", "crack", "tear_puncture", "paint_chipping")
+EXTENDED_CLASS_NAMES = CLASS_NAMES + ("tear puncture", "paint chipping")
+DAMAGE_MERGE_MAP = {
+    "scratch": "scratch",
+    "dent": "dent",
+    "crack": "crack",
+    "glass shatter": "crack",
+    "glass_shatter": "crack",
+    "lamp broken": "crack",
+    "lamp_broken": "crack",
+    "tear puncture": "tear_puncture",
+    "tear_puncture": "tear_puncture",
+    "paint chipping": "paint_chipping",
+    "paint_chipping": "paint_chipping",
+    "tire flat": None,
+    "tire_flat": None,
+}
 
 
 def canonical_name(name: str) -> str:
-    # Hỗ trợ checkpoint cũ có '_' và annotation gốc có dấu cách.
+    # Hỗ trợ checkpoint cũ có '_' và annotation gốc có dấu cách, cùng 5 lớp chuẩn Proposal.
     name = " ".join(name.strip().lower().replace("_", " ").split())
-    if name not in CLASS_NAMES:
+    if name not in EXTENDED_CLASS_NAMES:
         raise ValueError(f"Unknown CarDD class: {name!r}")
     return name
 

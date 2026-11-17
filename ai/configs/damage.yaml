@@ -1,0 +1,47 @@
+# Cấu hình 5 Nhóm Hư Hỏng Chuẩn theo Capstone Proposal (Stage 1 - In-Scope)
+# 1. Vết cào xước (Scratch)
+# 2. Vết móp/lõm (Dent)
+# 3. Rạn nứt kính/đèn (Crack) - Gộp từ crack, glass_shatter, lamp_broken
+# 4. Rách thủng cản nhựa (Tear/Puncture)
+# 5. Bong tróc lớp sơn (Paint Chipping)
+
+path: D:/AI_CAR/ai/data/yolo
+train: images/train
+val: images/val
+test: images/test
+
+nc: 5
+names:
+  0: scratch         # Vết cào xước (Scratch)
+  1: dent            # Vết móp/lõm (Dent)
+  2: crack           # Rạn nứt kính/đèn (Crack)
+  3: tear_puncture   # Rách thủng cản nhựa (Tear/Puncture)
+  4: paint_chipping  # Bong tróc lớp sơn (Paint Chipping)
+
+# Ánh xạ gộp (merge) từ nhãn CarDD thô về đúng 5 class chuẩn Capstone Proposal
+class_merge_map:
+  scratch: scratch
+  dent: dent
+  crack: crack
+  glass_shatter: crack
+  glass shatter: crack
+  lamp_broken: crack
+  lamp broken: crack
+  tear_puncture: tear_puncture
+  tear puncture: tear_puncture
+  paint_chipping: paint_chipping
+  paint chipping: paint_chipping
+  tire_flat: null
+  tire flat: null
+
+display_names_vi:
+  scratch: "Vết cào xước (Scratch)"
+  dent: "Vết móp/lõm (Dent)"
+  crack: "Rạn nứt kính/đèn (Crack)"
+  tear_puncture: "Rách thủng cản nhựa (Tear/Puncture)"
+  paint_chipping: "Bong tróc lớp sơn (Paint Chipping)"
+
+mixup: 0.15
+mosaic: 1.0
+scale: 0.5
+degrees: 10.0

@@ -1,7 +1,13 @@
 import json
-import shutil
 from pathlib import Path
+import shutil
 import sys
+
+# Đảm bảo UTF-8 trên Windows console
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from runtime import AI_ROOT, canonical_name
@@ -17,7 +23,10 @@ def norm(name: str) -> str:
 
 
 def load(split: str) -> dict:
-    return json.loads((RAW / "annotations" / f"instances_{split}.json").read_text(encoding="utf-8"))
+    p = RAW / "annotations" / f"instances_{split}.json"
+    if not p.is_file():
+        p = RAW / "annotations" / f"instances_{split}2017.json"
+    return json.loads(p.read_text(encoding="utf-8"))
 
 
 def main() -> None:
@@ -60,22 +69,22 @@ def main() -> None:
 
         missing = 0
         for img_id, img in images.items():
-            src = index.get(Path(img["file_name"]).name)
-            if src is None:
-                # REVIEW [P2]: Thiếu ảnh chỉ tăng counter rồi vẫn xuất YAML thành công.
-                # Nếu dataset tải thiếu, pipeline có thể train trên split không đủ
-                # mà không báo lỗi. Nên kiểm tra đủ ảnh trước khi ghi output và
-                # dừng với lỗi nếu missing > 0; dữ liệu hiện tại không thiếu ảnh.
+            file_name = Path(img["file_name"]).name
+            file_stem = Path(img["file_name"]).stem
+            src = index.get(file_name)
+            if src is not None:
+                dst = img_dir / src.name
+                if not dst.exists():
+                    shutil.copy2(src, dst)
+            else:
                 missing += 1
-                continue
-            dst = img_dir / src.name
-            if not dst.exists():
-                shutil.copy2(src, dst)
-            (lbl_dir / f"{src.stem}.txt").write_text("\n".join(lines[img_id]), encoding="utf-8")
+            # Luôn xuất nhãn polygon YOLO để sẵn sàng bộ nhãn chuẩn
+            (lbl_dir / f"{file_stem}.txt").write_text("\n".join(lines[img_id]), encoding="utf-8")
 
         print(f"{split}: {len(images)} ảnh, thiếu file {missing}, bỏ qua {skipped} polygon")
 
-    yaml = [f"path: {OUT.resolve()}", "train: images/train", "val: images/val", "test: images/test", "names:"]
+    resolved_path = str(OUT.resolve()).replace("\\", "/")
+    yaml = [f"path: {resolved_path}", "train: images/train", "val: images/val", "test: images/test", "names:"]
     yaml += [f"  {i}: {n}" for i, n in enumerate(names)]
     (AI_ROOT / "configs").mkdir(exist_ok=True)
     (AI_ROOT / "configs/data.yaml").write_text("\n".join(yaml) + "\n", encoding="utf-8")

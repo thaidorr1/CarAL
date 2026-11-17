@@ -1,0 +1,25 @@
+# Cấu hình Dataset Phân đoạn Bộ phận Xe (Stage 2 - 7 Lớp Chuẩn DOCX)
+# Tổng số lượng ảnh sau khi làm sạch & bổ sung dữ liệu góc hẹp (Phương án A):
+# - Train: 1525 ảnh & 1525 nhãn (798 ảnh đã làm sạch + 727 ảnh cận cảnh đa giác khai thác từ CarDD)
+# - Val:   97 ảnh & 97 nhãn (62 ảnh gốc đã đồng bộ + 35 ảnh cận cảnh đa giác)
+# - Tổng:  1622 ảnh
+path: D:/AI_CAR/ai/data/parts
+train: images/train
+val: images/val
+test: images/val
+names:
+  0: can_truoc
+  1: can_sau
+  2: nap_capo
+  3: ve_che_banh
+  4: cua_hong
+  5: kinh_chieu_hau
+  6: kinh_lai
+nc: 7
+train_images_count: 1525
+val_images_count: 97
+total_images_count: 1622
+mixup: 0.15
+mosaic: 1.0
+scale: 0.5
+degrees: 10.0

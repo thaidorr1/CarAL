@@ -1,0 +1,26 @@
+# Cấu hình Bộ phận Ngoại thất Xe (Stage 2 - Đồng bộ Capstone Proposal)
+# 7 class AI gốc + Topology phân giải 'cua_hong' thành 4 cửa riêng biệt
+path: D:/AI_CAR/ai/data/parts
+train: images/train
+val: images/val
+test: images/val
+names:
+  0: can_truoc       # Cản trước
+  1: can_sau         # Cản sau
+  2: nap_capo        # Nắp capo
+  3: ve_che_banh     # Vè che bánh
+  4: cua_hong        # 4 cửa hông (Topology chia: Cửa trước trái, Cửa sau trái, Cửa trước phải, Cửa sau phải)
+  5: kinh_chieu_hau  # Gương chiếu hậu
+  6: kinh_lai        # Kính lái
+nc: 7
+
+topology_door_subclasses:
+  - "Cửa trước trái"
+  - "Cửa sau trái"
+  - "Cửa trước phải"
+  - "Cửa sau phải"
+
+mixup: 0.15
+mosaic: 1.0
+scale: 0.5
+degrees: 10.0

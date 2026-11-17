@@ -1,26 +1,23 @@
-# Tài liệu/dataset tham khảo lưu riêng, không đưa repo Git lồng nhau lên Git.
-/_archive/
-
-# Dữ liệu và sản phẩm chạy được tạo lại từ code.
-/ai/data/
-/ai/runs/
-/ai/reports/
+﻿__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.vscode/
+.env
+ai/data/
+ai/runs/
+ai/reports/
+ai/scripts/archive_tools/
+_backup_config_code/
+scratch/
+graphify-out/
+demo/
+evaluation/
+launch_labelme_pilot.bat
+random_demo.py
 *.pt
 *.pth
 *.onnx
-*.engine
-*.cache
-*.log
-
-# Môi trường và cache cục bộ.
-.venv/
-venv/
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.DS_Store
-
-# Cấu hình bí mật cục bộ; có thể commit file mẫu.
-.env
-.env.*
-!.env.example
+!ai/models/weights/damage_best.pt
+!ai/models/weights/parts_seg.pt

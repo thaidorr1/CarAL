@@ -1,4 +1,5 @@
-path: /Users/nguyenson/Tuankiet/ai/data/yolo
+# Cấu hình Dataset Huấn luyện & Đồng bộ 5 Nhóm Hư Hỏng theo Capstone Proposal
+path: D:/AI_CAR/ai/data/yolo
 train: images/train
 val: images/val
 test: images/test
@@ -9,3 +10,26 @@ names:
   3: glass_shatter
   4: lamp_broken
   5: tire_flat
+
+# 5 Nhóm Hư Hỏng Chuẩn In-Scope (Capstone Proposal) sau khi gộp nhãn dư:
+proposal_damage_classes:
+  0: scratch         # Vết cào xước (Scratch)
+  1: dent            # Vết móp/lõm (Dent)
+  2: crack           # Rạn nứt kính/đèn (Crack) <- gộp từ crack, glass_shatter, lamp_broken
+  3: tear_puncture   # Rách thủng cản nhựa (Tear/Puncture)
+  4: paint_chipping  # Bong tróc lớp sơn (Paint Chipping)
+
+class_merge_map:
+  dent: dent
+  scratch: scratch
+  crack: crack
+  glass_shatter: crack
+  lamp_broken: crack
+  tear_puncture: tear_puncture
+  paint_chipping: paint_chipping
+  tire_flat: null
+
+mixup: 0.15
+mosaic: 1.0
+scale: 0.5
+degrees: 10.0
